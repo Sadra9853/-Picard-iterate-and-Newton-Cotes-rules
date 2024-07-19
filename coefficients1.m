@@ -21,4 +21,4 @@ for j=1:k
     end
     coefficients(j,:)=(R\C')';
 end
-coefficients=coefficientscoefficients*k
+coefficients=coefficients*k
