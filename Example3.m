@@ -10,7 +10,7 @@ exact=@(t) -(6*t + 1)/(3*t + 2);
 f=@(t) (exp(-4*t)/2-1) ;
 K=@(t,s,u) -exp(-4*(t-s))*u^2;
 %Example3
-n =20;
+n =20; %n must be a multip multiple of k
 k=2;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
