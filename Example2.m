@@ -10,7 +10,7 @@ exact=@(t) t+t^3/8;
 f=@(t) (1/8)*t^3 - (29/4)*cos(t) + sin(t) + 29/4 - (1/64)*t^6 + (7/32)*t^4 - (29/8)*t^2;
 K=@(t,s,u)sin(t-s)*(s+u^2);
 %Example2
-n =80;
+n =80; %n must be a multip multiple of k
 k=10;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
