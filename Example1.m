@@ -10,7 +10,7 @@ exact=@(t)  t^2-1;
 f=@(t) (2/15)*t.^6 - (1/3)*t.^4 + t.^2 - 1;
 K=@(t,s,u)(t - 2*s).*u.^2;
 %Example1
-n =40; %n must be a multip multiple of 
+n =40; %n must be a multip multiple of k
 k=2;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
