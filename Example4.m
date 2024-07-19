@@ -11,7 +11,7 @@ exact=@(t) log(1+t);
 f=@(t) (1 + 11*t/9 + 2*t^2/3 - t^3/3 + 2*t^4/9)*log(t + 1) - (1/3)*(t + t^4)*log((t + 1))^2 - 11*t^2/9 + 5*t^3/18 - 2*t^4/27;
 K=@(t,s,u)t*s^2*u^2;
 %Example4
-n =20;
+n =20; %n must be a multip multiple of k
 k=10;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
