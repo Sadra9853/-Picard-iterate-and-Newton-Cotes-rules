@@ -11,7 +11,7 @@ exact=@(t) (4-t^2)^2/16;
 f=@(t) 1;
 K=@(t,s,u) -s*(sqrt(u));
 %Example5
-n =40;
+n =40; %n must be a multip multiple of k
 k=10;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
