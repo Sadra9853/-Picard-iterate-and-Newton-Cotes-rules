@@ -20,3 +20,4 @@ for i=0:k
 end
 end
 save('k10','ww');
+ww
