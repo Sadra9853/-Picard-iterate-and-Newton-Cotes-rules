@@ -8,10 +8,10 @@ syms t s u
 %Example5
 syms t s u
 exact=@(t) (4-t^2)^2/16;
-f=@(t) 1;
-K=@(t,s,u) -s*(sqrt(u));
+f=@(t) 1+t^2;
+K=@(t,s,u) -s*(sqrt(u)+2);
 %Example5
-n =40; %n must be a multip multiple of k
+n =40;
 k=10;
 %Computing  Newton-Cotes rules coefficients for k
 syms y r
@@ -62,8 +62,8 @@ for s=1:n+1
 end
 e=abs(L-xs);
 M=max(e)
-%  save('C:\09127944942\amanuscript\Fractional\Volltera  one\Matlab\Example5\n=40\k=8\Voltteraexample.mat','e','M','it1','xs','L','n','k');
-%  plot(I,e,'r*');
+%save(['Voltteraexample.mat','e','M','it1','xs','L','n','k');
+ plot(I,e,'r*');
 %Computing  Re-NCR n,r,q (K(t r ,·,x(·)),[t 0 = a,t r = a + rh])Iterative method based on inside Newton-Cotes rules (equation 16) for q=0
 function s3 = NC(Array,location_s,n,k,w)
 global  I K
