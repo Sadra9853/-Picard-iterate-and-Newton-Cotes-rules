@@ -1,0 +1,109 @@
+clc; clear; close all;
+format short; format compact;
+
+%% =====================  Global Variables  ============================
+global I K n k;
+
+syms t s u
+
+%% =====================  Example 7 Definition  ========================
+exact=@(t) 1;
+f = @(t) -((t < 0).*(-t.^2/2 + 1/2) + (t >= 0).*(t.^2/2 + 1/2)) + 1;
+K=@(t,s,u)  abs(s)*u;
+
+n = 1000;
+k = 10;
+
+%% ===================== Computing Newton–Cotes Coefficients ===========
+syms y
+R  = zeros(k, k+1);
+ww = zeros(k, k+1);
+
+g = @(y,r) y.^r;
+I = 0:1/k:1;
+C = I;
+
+for i = 0:k
+    R(i+1, :) = g(I, i);
+end
+
+for j = 1:k
+    for i = 0:k
+        C(i+1) = int(g(y, i), y, 0, j/k);
+    end
+    ww(j,:) = (R \ C')';
+end
+
+a = -1;
+b = 1;
+h = (b - a) / n;
+
+coefficients = k * h * ww;
+
+%% ===================== Numerical Solution Initialization =============
+xs = a:h:b;     % grid points
+ys = xs .* k;
+I  = a:h:b;
+
+xs(1) = f(I(1));
+L = I;
+
+%% ===================== Main Iterative Loop ============================
+tic
+it1 = 0;
+
+while max(abs(ys - xs)) > 1e-15
+    ys = xs;
+    it1 = it1 + 1
+
+    for s = 2:n+1
+        a2 = mod(s, k);
+        if a2 == 0 || a2 == 1
+            a2 = a2 + k;
+        end
+        
+        xs(s) = f(I(s)) + ...
+                NC(xs(1:s-a2+1), s, s-a2+1, k, coefficients(k,:)) + ...
+                NCEND(xs(s-a2+1:s-a2+k+1), s, I(s-a2+1:s-a2+k+1), coefficients(a2-1,:));
+    end
+end
+toc
+
+%% ===================== Exact Solution & Error =========================
+for s = 1:n+1
+    L(s) = exact(I(s));
+end
+
+e = abs(L - xs);
+M = max(e)
+
+figure;
+plot(I, e, 'r*');
+title('Error Plot');
+xlabel('t'); ylabel('Error');
+% ===================== Save ========================
+% save(['Voltteraexample.mat'], ...
+%     'e','M','it1','xs','L','n','k');
+%% ===================== Inside Newton–Cotes Function ==================
+function s3 = NC(Array, location_s, n, k, w)
+    global I K
+    SS = 0;
+
+    for j1 = 1:k:n-k
+        for i1 = 0:k
+            SS = SS + w(i1+1) * K(I(location_s), I(j1+i1), Array(j1+i1));
+        end
+    end
+    s3 = SS;
+end
+
+%% ===================== Outside Newton–Cotes Function =================
+function s3 = NCEND(Array, location_s, Inew, w2)
+    global I K k
+    SS = 0;
+
+    for i1 = 0:k
+        SS = SS + w2(i1+1) * K(I(location_s), Inew(i1+1), Array(i1+1));
+    end
+    s3 = SS;
+end
