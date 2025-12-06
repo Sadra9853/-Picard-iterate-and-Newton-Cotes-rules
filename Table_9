@@ -1,0 +1,77 @@
+clc; clear; close all;
+format long;
+k=10,
+% Fixed Newton–Cotes weights
+coeff = [ ...
+    94/3503, 2235/12589, -292/3603, 722/1587, -406/933,...
+    783/1097, -406/933, 722/1587, -292/3603, 2235/12589, 94/3503];
+
+% Exact integrals
+syms t
+I_exact_runge = int(1/(1 + 25*t^2), t, -1, 1);
+I_exact_abs   = int(abs(t), -1, 1);
+
+% ----------------- NODE DEFINITIONS ------------------
+x11  = linspace(-1, 1, 11);
+x11L = linspace(-1, 0, 11);
+x11R = linspace(0, 1, 11);
+x11LL = linspace(-1, -1/2, 11);
+x11LR = linspace(-1/2, 0, 11);
+x11RL = linspace(0, 1/2, 11);
+x11RR = linspace(1/2, 1, 11);
+
+% ------------------- COMPUTE I VALUES -----------------
+% n = 10,h=0.2
+h=0.2;
+I1 = dot(k*h*coeff, 1./(1 + 25*x11.^2));
+I2 = dot(k*h*coeff, abs(x11));
+% n = 20,h=0.1
+h=0.1;
+I3 =dot(k*h* coeff, 1./(1 + 25*x11L.^2)) + dot(k*h* coeff, 1./(1 + 25*x11R.^2));
+I4 = dot(k*h* coeff, abs(x11L)) + dot(k*h* coeff, abs(x11R));
+% n = 40,h=0.05
+h=0.05;
+I5 = (dot(k*h* coeff, 1./(1 + 25*x11LL.^2)) + dot(k*h* coeff, 1./(1 + 25*x11LR.^2)) ...
+      + dot(k*h* coeff, 1./(1 + 25*x11LR.^2)) + dot(k*h* coeff, 1./(1 + 25*x11RR.^2)));
+I6 = (dot(k*h* coeff, abs(x11LL)) + dot(k*h* coeff, abs(x11LR)) ...
+      + dot(k*h* coeff, abs(x11LR)) + dot(k*h* coeff, abs(x11RR)));
+
+% ------------------ COMPUTE ERRORS --------------------
+e1 = double(abs(I1 - I_exact_runge));
+e2 = double(abs(I2 - I_exact_abs));
+e3 = double(abs(I3 - I_exact_runge));
+e4 = double(abs(I4 - I_exact_abs));
+e5 = double(abs(I5 - I_exact_runge));
+e6 = double(abs(I6 - I_exact_abs));
+
+% ----------------- TABLES -----------------------------
+Table_I = [I1 I2 I3 I4 I5 I6];
+Table_E = [e1 e2 e3 e4 e5 e6];
+
+% ------------------ SHOW TABLE ------------------------
+fprintf('\n=========== RESULTS (10 decimal digits) ===========\n')
+fprintf('         I-values                 Error-values\n');
+fprintf('----------------------------------------------------\n');
+
+fprintf('n=10  :  I1=%.10f   I2=%.10f      e(I1)=%.10f   e(I2)=%.10f\n', I1,I2,e1,e2);
+fprintf('n=20  :  I1=%.10f   I2=%.10f      e(I1)=%.10f   e(I2)=%.10f\n', I3,I4,e3,e4);
+fprintf('n=40  :  I1=%.10f   I2=%.10f      e(I1)=%.10f   e(I2)=%.10f\n', I5,I6,e5,e6);
+
+fprintf('----------------------------------------------------\n');
+% ------------------ SHOW TABLES ------------------------
+
+fprintf('\n=========  TABLE 1: I Values (10 decimals) ==========\n');
+fprintf('   n        I1                I2\n');
+fprintf('------------------------------------------------------\n');
+fprintf('  10   %.10f     %.10f\n', I1, I2);
+fprintf('  20   %.10f     %.10f\n', I3, I4);
+fprintf('  40   %.10f     %.10f\n', I5, I6);
+fprintf('------------------------------------------------------\n');
+
+fprintf('\n=========  TABLE 2: Error Values (10 decimals) ========\n');
+fprintf('   n        e1                e2\n');
+fprintf('------------------------------------------------------\n');
+fprintf('  10   %.10f     %.10f\n', e1, e2);
+fprintf('  20   %.10f     %.10f\n', e3, e4);
+fprintf('  40   %.10f     %.10f\n', e5, e6);
+fprintf('------------------------------------------------------\n');
